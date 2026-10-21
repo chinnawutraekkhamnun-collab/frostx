@@ -1,13 +1,16 @@
+# โหลด Assembly สำหรับ UI
+Add-Type -AssemblyName System.Windows.Forms
+
+# ดึงค่า HWID ของเครื่อง
 $hwid = (Get-CimInstance Win32_ComputerSystemProduct).UUID
 $body = @{ hwid = $hwid } | ConvertTo-Json
 
 try {
-    $response = Invoke-RestMethod -Uri "https://flat-art-959b.rov170652.workers.dev" -Method Post -Body $body -ContentType "application/json"
-    Write-Output "Success response received!"
-    Invoke-Expression $response
+    # ส่ง Request ไปยัง Worker
+    $scriptToRun = Invoke-RestMethod -Uri "https://flat-art-959b.rov170652.workers.dev" -Method Post -Body $body -ContentType "application/json"
+    
+    # ประมวลผลสคริปต์ที่ได้รับกลับมา
+    Invoke-Expression $scriptToRun
 } catch {
-    Write-Host "--- WORKER ERROR ---" -ForegroundColor Red
-    $stream = $_.Exception.Response.GetResponseStream()
-    $reader = New-Object System.IO.StreamReader($stream)
-    Write-Host $reader.ReadToEnd() -ForegroundColor Yellow
+    [System.Windows.Forms.MessageBox]::Show("เกิดข้อผิดพลาดในการเชื่อมต่อ หรือเครื่องยังไม่ได้ลงทะเบียน", "FlowSkipper Error", 0, 16)
 }
